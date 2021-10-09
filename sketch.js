@@ -1,46 +1,135 @@
-var canvas;
-var backgroundImage, R34Img, SilviaImg, track;
-// car1 is Nissan GTR R34 and car2 is Nissan Silvia RocketBunny
-var fuelImage, powerCoinImage, lifeImage;
-var M3GTRImg, PorscheImg, AE86Img;
-// obstacle1 is the BMW M3 GTR and obstacle2 is the Porsche
-var database, gameState;
-var form, player, playerCount;
-var allPlayers, R34, Silvia, fuels, powerCoins, obstacles;
-var cars = [];
+var SuperMarioBrosStage;
+var MarioStageImg;
+var SuperMario;
+var MarioAnimation;
+var MarioJumpingImg;
+var ThankYouMarioImg;
+var ThankYouMario;
 
-function preload() {
-  backgroundImage = loadImage("./assets/background.png");
-  R34Img = loadImage("../assets/Nissan GTR R34 Pixel Car Racer (2).jpg");
-  SilviaImg = loadImage("../assets/Nissan Silvia RocketBunny.png");
-  track = loadImage("../assets/track.jpg");
-  fuelImage = loadImage("./assets/fuel.png");
-  powerCoinImage = loadImage("./assets/goldCoin.png");
-  M3GTRImg = loadImage("./assets/Need For Speed Most Wanted 2005 BMW M3 GTR Iconic Car Replica Pixel Car Racer (2).jpg");
-  PorscheImg = loadImage("./assets/Pixel Car Racer Porsche (2).jpg");
-  AE86Img = loadImage("./assets/Toyota ae86 Pixel Car Racer (3).png");
-  lifeImage = loadImage("./assets/life.png");
+function preload(){
+  //pre-load images
+  MarioStageImg = loadImage("Super Mario Bros. World 1 - 1.png");
+  MarioAnimation = loadAnimation("Mario Running.gif");
+  MarioJumpingImg = loadImage("Super Mario Jumping.jpg");
+  ThankYouMarioImg = loadImage("Thank You Mario!.jpg");
 }
 
-function setup() {
-  canvas = createCanvas(displayWidth, displayHeight);
-  database = firebase.database();
-  game = new Game();
-  game.getState();
-  game.start();
+
+function setup(){
+  createCanvas(displayWidth,displayHeight);
+  //create sprites here
+  SuperMarioBrosStage = createSprite(450,460,displayWidth,displayHeight);
+  //old values for SuperMarioBrosStage createSprite(150,180,300,360);
+SuperMarioBrosStage.addImage("LevelBackground",MarioStageImg);
+  //SuperMarioBrosStage.x = SuperMarioBrosStage.width /2;
+  //SuperMarioBrosStage.velocityX = -3;
+  
+  SuperMario = createSprite(-100,400);
+  SuperMario.addAnimation("MarioRunning",MarioAnimation);
+  SuperMario.scale=0.15;
+  
+  ThankYouMario = createSprite(displayWidth,displayHeight,displayWidth,displayHeight);
+  ThankYouMario.addImage("AnotherCastle",ThankYouMarioImg);
+  ThankYouMario.scale = 0.68
+  ThankYouMario.visible=false;
+  
+  //invisibleGround1 = createSprite(-100,826,10000,10);
+  invisibleGround1 = createSprite(-100,826,190,10);
+  invisibleGround1.visible=false;
+
+  invisibleGround2 = createSprite(121,826,151.5,10);
+  invisibleGround2.visible=false;
+
+  invisibleGround3 = createSprite(632,826,756,10);
+  invisibleGround3.visible=false;
+
+  invisibleGround4 = createSprite(1358,826,600,10);
+  invisibleGround4.visible=false;
+
+  invisibleBoundary1 = createSprite(-164,826,1,400);
+  invisibleBoundary1.visible=false;
+  
+  invisibleBoundary2 = createSprite(1572,826,1,400);
+  invisibleBoundary2.visible=false;
+
+  invisibleBoundary3 = createSprite(1600,826,1,400);
+  invisibleBoundary3.visible=false;
 }
 
 function draw() {
-  background(backgroundImage);
-  if (playerCount === 2) {
-    game.update(1);
+  background("light blue");
+  
+  /*if (SuperMarioBrosStage.x < 0) {
+    SuperMarioBrosStage.x = SuperMarioBrosStage.width /2;
+  }*/
+
+  console.log(SuperMario.position.x);
+  
+  if(keyWentDown("up") && SuperMario.collide(invisibleGround1)){
+    SuperMario.velocityY = -9;
+    SuperMario.changeImage("MarioJumping",MarioJumpingImg);
   }
 
-  if (gameState === 1) {
-    game.play();
+  if(keyWentDown("up") && SuperMario.collide(invisibleGround2)){
+    SuperMario.velocityY = -9;
+    SuperMario.changeImage("MarioJumping",MarioJumpingImg);
   }
+
+  if(keyWentDown("up") && SuperMario.collide(invisibleGround3)){
+    SuperMario.velocityY = -9;
+    SuperMario.changeImage("MarioJumping",MarioJumpingImg);
+  }
+
+  if(keyWentDown("up") && SuperMario.collide(invisibleGround4)){
+    SuperMario.velocityY = -9;
+    SuperMario.changeImage("MarioJumping",MarioJumpingImg);
+  }
+  
+  if(keyWentDown("right")){
+    SuperMario.velocityX = SuperMario.velocityX +3;
+  }
+  
+  if(keyWentUp("right")){
+    SuperMario.velocityX = 0;
+  }
+  
+  if(keyWentDown("left")){
+    SuperMario.velocityX = SuperMario.velocityX -4;
+  }
+  
+  if(keyWentUp("left")){
+    SuperMario.velocityX = 0;
+  }
+  
+  SuperMario.velocityY = SuperMario.velocityY + 0.6;
+  
+  SuperMario.collide(invisibleGround1);
+  
+  SuperMario.collide(invisibleGround2);
+
+  SuperMario.collide(invisibleGround3);
+
+  SuperMario.collide(invisibleGround4);
+  
+  SuperMario.collide(invisibleBoundary1);
+  
+  SuperMario.collide(invisibleBoundary3);
+
+  if(SuperMario.isTouching(invisibleBoundary2)){
+    ThankYouMario.visible = true;
+    SuperMario.position.x = 1354
+    SuperMario.velocityX = 0;
+    SuperMario.velocityY = 0;
+  }
+
+  camera.position.x = SuperMario.x;
+  camera.position.y = SuperMario.y;
+
+  drawSprites();
 }
 
-function windowResized() {
-  resizeCanvas(displayWidth, displayHeight);
-}
+/*function MarioRunning(){
+  if(SuperMario.collide(invisibleGround1)){
+    SuperMario.addImage("MarioRunning",MarioAnimation);
+  }
+}*/
