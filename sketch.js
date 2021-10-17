@@ -5,6 +5,9 @@ var MarioAnimation;
 var MarioJumpingImg;
 var ThankYouMarioImg;
 var ThankYouMario;
+var ThankYouMarioSound;
+var MarioJumpingSound;
+var StageSound;
 
 function preload(){
   //pre-load images
@@ -12,6 +15,9 @@ function preload(){
   MarioAnimation = loadAnimation("Mario Running.gif");
   MarioJumpingImg = loadImage("Super Mario Jumping.jpg");
   ThankYouMarioImg = loadImage("Thank You Mario!.jpg");
+  ThankYouMarioSound = loadSound('sm64_mario_thank_you.wav');
+  MarioJumpingSound = loadSound('maro-jump-sound-effect_1.mp3');
+  StageSound = loadSound('21 Breezy Mushrise Park.mp3');
 }
 
 
@@ -27,6 +33,8 @@ SuperMarioBrosStage.addImage("LevelBackground",MarioStageImg);
   SuperMario = createSprite(-100,400);
   SuperMario.addAnimation("MarioRunning",MarioAnimation);
   SuperMario.scale=0.15;
+  SuperMario.debug=true;
+  SuperMario.setCollider('circle',0,20,60)
   
   ThankYouMario = createSprite(displayWidth,displayHeight,displayWidth,displayHeight);
   ThankYouMario.addImage("AnotherCastle",ThankYouMarioImg);
@@ -37,7 +45,7 @@ SuperMarioBrosStage.addImage("LevelBackground",MarioStageImg);
   invisibleGround1 = createSprite(-100,826,190,10);
   invisibleGround1.visible=false;
 
-  invisibleGround2 = createSprite(121,826,151.5,10);
+  invisibleGround2 = createSprite(115,826,170.5,10);
   invisibleGround2.visible=false;
 
   invisibleGround3 = createSprite(632,826,756,10);
@@ -54,35 +62,45 @@ SuperMarioBrosStage.addImage("LevelBackground",MarioStageImg);
 
   invisibleBoundary3 = createSprite(1600,826,1,400);
   invisibleBoundary3.visible=false;
+
+  stone1 = createSprite(798,810,5,5);
+  stone1.visible=false;
+
+  StageSound.play();
 }
 
 function draw() {
-  background("light blue");
+  background("black");
   
   /*if (SuperMarioBrosStage.x < 0) {
     SuperMarioBrosStage.x = SuperMarioBrosStage.width /2;
   }*/
 
   console.log(SuperMario.position.x);
+  console.log(SuperMario.position.y);
   
   if(keyWentDown("up") && SuperMario.collide(invisibleGround1)){
     SuperMario.velocityY = -9;
     SuperMario.changeImage("MarioJumping",MarioJumpingImg);
+    MarioJumpingSound.play();
   }
 
   if(keyWentDown("up") && SuperMario.collide(invisibleGround2)){
     SuperMario.velocityY = -9;
     SuperMario.changeImage("MarioJumping",MarioJumpingImg);
+    MarioJumpingSound.play();
   }
 
   if(keyWentDown("up") && SuperMario.collide(invisibleGround3)){
     SuperMario.velocityY = -9;
     SuperMario.changeImage("MarioJumping",MarioJumpingImg);
+    MarioJumpingSound.play();
   }
 
   if(keyWentDown("up") && SuperMario.collide(invisibleGround4)){
     SuperMario.velocityY = -9;
     SuperMario.changeImage("MarioJumping",MarioJumpingImg);
+    MarioJumpingSound.play();
   }
   
   if(keyWentDown("right")){
@@ -104,22 +122,20 @@ function draw() {
   SuperMario.velocityY = SuperMario.velocityY + 0.6;
   
   SuperMario.collide(invisibleGround1);
-  
   SuperMario.collide(invisibleGround2);
-
   SuperMario.collide(invisibleGround3);
-
   SuperMario.collide(invisibleGround4);
-  
   SuperMario.collide(invisibleBoundary1);
-  
   SuperMario.collide(invisibleBoundary3);
+
+  SuperMario.collide(stone1);
 
   if(SuperMario.isTouching(invisibleBoundary2)){
     ThankYouMario.visible = true;
     SuperMario.position.x = 1354
     SuperMario.velocityX = 0;
     SuperMario.velocityY = 0;
+    ThankYouMario.play();
   }
 
   camera.position.x = SuperMario.x;
